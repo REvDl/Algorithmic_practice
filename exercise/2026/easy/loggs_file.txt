@@ -1,0 +1,6 @@
+[INFO] Server started
+[ERROR] Database connection failed
+[DEBUG] Checking cache
+[INFO] Request received
+[ERROR] Timeout on port 80
+[INFO] Process finished

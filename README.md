@@ -18,6 +18,6 @@ Not intended as a "pet project" — just a personal log of algorithms and practi
 
 ### Что внутри:
 * **LeetCode / Codewars / Exercism / Solvit** — решения задач с известных платформ.
-* **Exercise/My_fantasy** — различный код, который не является решением алгоритмической задачи с известных платформ.
+* **My_fantasy** — различный код, который не является решением алгоритмической задачи с известных платформ.
 
 **Stack:** Python 3.12

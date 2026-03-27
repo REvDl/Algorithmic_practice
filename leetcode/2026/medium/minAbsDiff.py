@@ -11,21 +11,19 @@ class Solution:
 				for r in range(i, i + k):
 					for c in range(j, j + k):
 						elements.add(grid[r][c])
-				elements = sorted(list(elements))
+				elements = sorted(elements)
 				if len(elements) < 2:
-					ans[i][j] = 0
+					diff = 0
 					continue
 				diff = float("inf")
-				for element in range(1, len(elements)):
-					current = abs(elements[element] - elements[element - 1])
-					if current < diff:
-						diff = current
+				for element in range(len(elements) - 1):
+					res = abs(elements[element] - elements[element + 1])
+					if res < diff:
+						diff = res
 				ans[i][j] = diff
 		return ans
 
 
-
-
 obj = Solution()
-grid = [[1,-2,3],[2,3,5]]
-print(obj.minAbsDiff(grid, 2))
+grid = [[3,-1]]
+print(obj.minAbsDiff(grid, 1))

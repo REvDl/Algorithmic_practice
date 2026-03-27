@@ -24,5 +24,18 @@ def task_two(n:int):
 			storage *= (i + 1) / i
 	return round(storage, 2)
 
-#print(prime_number(945_871_26))
-print(task_two(10))
+
+
+def task_three(x:int, e = 0.5*(10**-5)):
+	n = 1
+	total_sum = 0
+	piece = ((-1) ** n) / (n * (x ** n))
+	while abs(piece) > e:
+		total_sum += piece
+		n += 1
+		piece = ((-1) ** n) / (n * (x ** n))
+	return round(total_sum, 3)
+
+# print(prime_number(945_871_26))
+# print(task_two(10))
+print(task_three(2))

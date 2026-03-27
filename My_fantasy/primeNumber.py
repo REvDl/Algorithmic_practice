@@ -13,6 +13,16 @@ def prime_number(n:int) -> list[int]:
 	return numbers
 
 
+def task_two(n:int):
+	storage = 1
+	for i in range(1, n+1):
+		if i % 2 == 0:
+			print(f"{i}/{i + 1}")
+			storage *= i / (i + 1)
+		else:
+			print(f"{i+1}/{i}")
+			storage *= (i + 1) / i
+	return round(storage, 2)
 
-
-print(prime_number(945_871_26))
+#print(prime_number(945_871_26))
+print(task_two(10))

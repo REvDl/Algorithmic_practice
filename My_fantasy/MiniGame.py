@@ -12,24 +12,25 @@ def menu():
 		print("Управление: WASD. Для выхода зажми 'ESC'")
 		time.sleep(1)
 
+		print("\033[H\033[J", end="")
+		display(fill_out(n, m, char, person, x, y))
+		print("Управление: WASD. ESC - выход.")
+
 		while True:
-			print("\033[H\033[J", end="")
-			game_field = fill_out(n, m, char, person, x, y)
-			display(game_field)
-			if keyboard.is_pressed('esc'):
-				print("Выход из игры...")
-				break
-			moved = False
-			for key, (dx, dy) in controls.items():
-				if keyboard.is_pressed(key):
+			event = keyboard.read_event()
+			if event.event_type == keyboard.KEY_DOWN:
+				key = event.name.lower()
+				if key == 'esc':
+					print("\nВыход из игры...")
+					break
+				if key in controls:
+					dx, dy = controls[key]
 					x = (x + dx) % n
 					y = (y + dy) % m
-					moved = True
-					break
-			if moved:
-				time.sleep(0.10)
-			else:
-				time.sleep(0.05)
+					print("\033[H\033[J", end="")
+					display(fill_out(n, m, char, person, x, y))
+					print(f"Координаты: {x}:{y} | ESC - выход")
+		time.sleep(0.2)
 
 	except ValueError:
 		print("Ошибка данных")

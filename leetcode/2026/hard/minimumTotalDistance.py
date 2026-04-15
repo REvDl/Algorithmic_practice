@@ -18,8 +18,30 @@ class Solution:
 		return int(dp[m][n])
 
 
+class Solution_1:
+	def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+		n, m = len(robot), len(factory)
+		dp = [[float('inf') for _ in range(n + 1)] for _ in range(m + 1)]
+		robot.sort()
+		factory.sort()
+		dp[0][0] = 0
+		for i in range(m):
+			for j in range(n + 1):
+				diss = 0
+				dp[i + 1][j] = dp[i][j]
+				for k in range(1, min(j, factory[i][1]) + 1):
+					diss += abs(robot[j - k] - factory[i][0])
+					dp[i + 1][j] = min(diss + dp[i][j - k], dp[i+1][j])
+		return int(dp[m][n])
+
+
 
 obj = Solution()
 robot = [0,4,6]
 factory = [[2,2],[6,2]]
 print(obj.minimumTotalDistance(robot, factory))
+
+obj_1 = Solution_1()
+robot = [0,4,6]
+factory = [[2,2],[6,2]]
+print(obj_1.minimumTotalDistance(robot, factory))

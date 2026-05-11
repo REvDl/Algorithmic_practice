@@ -2,14 +2,24 @@ from typing import List
 
 
 class Solution:
-	def separateDigits(self, nums: List[int]) -> List[int]:
+	def separateDigits_v1(self, nums: List[int]) -> List[int]:
 		separate_nums = []
 		for num in nums:
-			separate = list(str(num))
+			separate = str(num)
 			for num_sep in separate:
 				separate_nums.append(int(num_sep))
 		return separate_nums
 
+
+	def separateDigits(self, nums: List[int]) -> List[int]:
+		separate_nums = []
+		for num in nums:
+			if num > 9:
+				for n in str(num):
+					separate_nums.append(int(n))
+			else:
+				separate_nums.append(num)
+		return separate_nums
 
 
 

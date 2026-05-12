@@ -55,7 +55,15 @@ HAND_CONNECTIONS = [
 
 cap = cv2.VideoCapture(0)
 canvas = None
-draw_color = (255, 0, 255)  # Розовый
+colors = {"r":(0, 0, 255),
+		  "b":(255, 0, 0),
+		  "g":(0, 255, 0),
+		  "w":(255, 255, 255),
+		  "l":(0, 0, 0),
+		  "y":(0, 255, 255),
+		  "a":(255, 255, 0),
+		  "p":(255, 0, 255)}
+draw_color = colors["p"]  #цвет
 brush_size = 15
 
 while True:
@@ -97,11 +105,14 @@ while True:
 	cv2.imshow("Air Paint", final_frame)
 
 	# 'q' для выхода, 'c' для очистки холста
-	key = cv2.waitKey(1) & 0xFF
-	if key == ord('q'):
+	key_char = chr(cv2.waitKey(1) & 0xFF)
+	if key_char == "q":
 		break
-	elif key == ord('c'):
+	elif key_char == "c":
 		canvas = np.zeros((h, w, c), dtype=np.uint8)
+	elif key_char in colors:
+		draw_color = colors[key_char]
+
 
 cap.release()
 cv2.destroyAllWindows()

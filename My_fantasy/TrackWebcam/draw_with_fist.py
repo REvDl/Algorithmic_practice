@@ -173,15 +173,9 @@ while True:
 
        if mask_scale > 20:
            resized_friend = cv2.resize(friend_face, (mask_scale, mask_scale))
-
-           # Получаем ТОЧНЫЕ размеры после ресайза
            fh, fw = resized_friend.shape[:2]
-
-           # Считаем левый верхний угол
            y1 = ny - int(fh // 1.7)
            x1 = nx - fw // 2
-
-           # Считаем правый нижний угол, просто прибавляя фактическую ширину и высоту
            y2 = y1 + fh
            x2 = x1 + fw
 

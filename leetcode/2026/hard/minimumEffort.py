@@ -1,5 +1,4 @@
 from typing import List
-from operator import itemgetter
 
 class Solution:
 	def minimumEffort(self, tasks: List[List[int]]) -> int:
@@ -8,7 +7,7 @@ class Solution:
 		current = 0
 		for task in tasks:
 			diff = task[1] - energy
-			while energy < task[1]:
+			if energy < task[1]:
 				energy += diff
 				current += diff
 			energy -= task[0]

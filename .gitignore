@@ -10,3 +10,12 @@ __pycache__/
 venv/
 .venv/
 *.egg-info/
+
+
+# image tracking
+
+foto_for_tracking.png
+one.png
+two.png
+three.png
+four.png

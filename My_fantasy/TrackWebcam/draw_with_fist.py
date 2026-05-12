@@ -1,3 +1,4 @@
+import random
 import cv2
 import mediapipe as mp
 from mediapipe.tasks import python
@@ -43,7 +44,6 @@ def is_fist(hand_landmarks):
 	return folded_fingers >= 3
 
 
-# Связи для ручной отрисовки скелета руки (т.к. старый mp_draw теперь не работает)
 HAND_CONNECTIONS = [
 	(0, 1), (1, 2), (2, 3), (3, 4),
 	(0, 5), (5, 6), (6, 7), (7, 8),
@@ -65,7 +65,55 @@ colors = {"r":(0, 0, 255),
 		  "p":(255, 0, 255)}
 draw_color = colors["p"]  #цвет
 brush_size = 15
+images = ["foto_for_track.png", "one.png", "two.png", "three.png", "four.png", "five.png"]
 
+
+overlay_img = None
+def random_photo():
+	img = cv2.imread(random.choice(images))
+	overlay_img = cv2.resize(img, (200, 200))
+	return overlay_img
+
+
+
+if overlay_img is not None:
+	overlay_img = random_photo()
+else:
+    print("ВНИМАНИЕ: Фотка не найдена! Проверь название файла.")
+
+
+
+def random_region(img_size, box_size=200):
+    h, w = img_size
+
+    y = random.randint(0, h - box_size)
+    x = random.randint(0, w - box_size)
+
+    return slice(y, y + box_size), slice(x, x + box_size)
+
+
+
+# Функция проверки жеста "Фиксики" (Peace / V-sign)
+def is_fixiki(hand_landmarks):
+	wrist = hand_landmarks[0]
+
+	def is_up(tip_idx, mcp_idx):
+		return calculate_distance(hand_landmarks[tip_idx], wrist) > calculate_distance(hand_landmarks[mcp_idx], wrist)
+
+	# Проверяем нужные пальцы
+	index_up = is_up(8, 5)  # Указательный
+	middle_up = is_up(12, 9)  # Средний
+	ring_down = not is_up(16, 13)  # Безымянный
+	pinky_down = not is_up(20, 17)  # Мизинец
+
+	# Большой палец (проверяем, что он прижат к ладони)
+	thumb_down = calculate_distance(hand_landmarks[4], hand_landmarks[17]) < 0.15
+
+	# Жест сработает, если выполнены ВСЕ условия одновременно
+	return index_up and middle_up and ring_down and pinky_down and thumb_down
+
+current_coords = None
+was_showing = False
 while True:
 	success, frame = cap.read()
 	if not success:
@@ -82,6 +130,9 @@ while True:
 
 	detection_result = detector.detect(mp_image)
 
+	# Флаг для показа картинки в текущем кадре
+	show_photo = False
+
 	if detection_result.hand_landmarks:
 		for hand_landmarks in detection_result.hand_landmarks:
 
@@ -97,10 +148,40 @@ while True:
 				cx, cy = int(center_point.x * w), int(center_point.y * h)
 				cv2.circle(canvas, (cx, cy), brush_size, draw_color, cv2.FILLED)
 
+			# --- ПРОВЕРКА ЖЕСТА ФИКСИКОВ ---
+			if is_fixiki(hand_landmarks):
+				show_photo = True
+		# -------------------------------
+
 	gray = cv2.cvtColor(canvas, cv2.COLOR_BGR2GRAY)
 	_, mask = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY_INV)
 	frame_bg = cv2.bitwise_and(frame, frame, mask=mask)
 	final_frame = cv2.bitwise_or(frame_bg, canvas)
+
+	# --- ОТРИСОВКА КАРТИНКИ (только на final_frame) ---
+	# --- ОТРИСОВКА КАРТИНКИ (только на final_frame) ---
+	if show_photo and overlay_img is not None:
+		# Если жест только появился (в прошлом кадре его не было) - генерируем координаты ОДИН РАЗ
+		if not was_showing or current_coords is None:
+			current_coords = random_region(final_frame.shape[:2], box_size=200)
+
+		# Достаем сохраненные координаты из памяти
+		y_slice, x_slice = current_coords
+
+		# Рисуем фото по этим координатам
+		final_frame[y_slice, x_slice] = overlay_img
+
+		# Ставим флажок, что в этом кадре мы фото показывали
+		was_showing = True
+
+	else:
+		# Если жест убрали - сбрасываем память
+		was_showing = False
+		current_coords = None
+		overlay_img = random_photo()
+	# --------------------------------------------------
+
+	# --------------------------------------------------
 
 	cv2.imshow("Air Paint", final_frame)
 
@@ -112,7 +193,6 @@ while True:
 		canvas = np.zeros((h, w, c), dtype=np.uint8)
 	elif key_char in colors:
 		draw_color = colors[key_char]
-
 
 cap.release()
 cv2.destroyAllWindows()

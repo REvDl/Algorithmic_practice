@@ -13,9 +13,22 @@ class Solution:
 			return True
 		return False
 
+	def isGood_v2(self, nums: List[int]) -> bool:
+		base_n = max(nums)
+		base = []
+		for i in range(1, base_n):
+			base.append(i)
+		base[len(base):] = [base_n, base_n]
+		nums.sort()
+		return base == nums
 
+	def isGood_v3(self, nums: List[int]) -> bool:
+		nums.sort()
+		base_n = nums[-1]
+		base = list(range(1, base_n)) + [base_n, base_n]
+		return base == nums
 
 
 obj = Solution()
 nums = [1, 3, 3, 2]
-print(obj.isGood_bad_version(nums))
+print(obj.isGood_v3(nums))

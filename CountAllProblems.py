@@ -1,59 +1,73 @@
 import json
-import os
 from pathlib import Path
 
-PATH_DIR = [r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\codewars",
-			r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\exercise",
-			r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\leetcode",
-			r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\My_fantasy",
-			r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\solvit",]
+PATH_DIR = [
+	r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\codewars",
+	r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\exercise",
+	r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\leetcode",
+	r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\My_fantasy",
+	r"C:\Users\revdos\PycharmProjects\Algorithmiс_practice\solvit",
+]
+DAYS = 83
+
+IGNORE_NAMES = {".git", ".idea", "__pycache__", "venv", ".env", "README.md"}
 
 
+def scan_dir(path_obj: Path) -> tuple[int | dict, int]:
+	files_count = 0
+	subdirs = []
 
-def ProblemsCount(arr: list[str]) -> dict:
-	result = dict()
-	for i in arr:
-		files = os.listdir(i)
-		name_file = i.split(os.sep)[-1]
-		result[name_file] = len(files)
-	return result
+	# 1. Проходим по текущей директории
+	for item in path_obj.iterdir():
+		if item.name in IGNORE_NAMES:
+			continue
 
+		if item.is_file():
+			files_count += 1
+		elif item.is_dir():
+			subdirs.append(item)
 
-def ProblemsCount_V2(arr: list[str]) -> dict:
-	result = dict()
-	for path in arr:
-		path_obj = Path(path)
-		all_subdirs = [f.name for f in path_obj.rglob('*') if f.is_dir()]
-		print(all_subdirs)
-
-		files = [f for f in path_obj.rglob("*.py") if f.is_file()]
-		result[path_obj.name] = len(files)
-	return result
-
-#Write with AI
-def scan_dir(path_obj: Path) -> int | dict:
-	subdirs = [d for d in path_obj.iterdir() if d.is_dir()]
 	if not subdirs:
-		return sum(1 for f in path_obj.glob('*') if f.is_file())
+		return files_count, files_count
 	res = {}
-	for sd in subdirs:
-		res[sd.name] = scan_dir(sd)
-	return res
+	total_in_this_dir = files_count
+	if files_count > 0:
+		res["_files"] = files_count
 
-#Also white with AI
+	for sd in subdirs:
+		sd_res, sd_total = scan_dir(sd)
+
+		if sd_total > 0:
+			res[sd.name] = sd_res
+			total_in_this_dir += sd_total
+
+	if list(res.keys()) == ["_files"]:
+		return res["_files"], total_in_this_dir
+
+	if total_in_this_dir == 0:
+		return 0, 0
+
+	return res, total_in_this_dir
+
+
 def print_stats(paths: list[str]) -> None:
-	"""Функция, которая отвечает ТОЛЬКО за вывод данных и подсчет итога."""
 	final_stats = {}
 	grand_total = 0
 
 	for p in paths:
 		path_obj = Path(p)
 		if path_obj.exists():
-			final_stats[path_obj.name] = scan_dir(path_obj)
-			current_total = sum(1 for f in path_obj.rglob('*') if f.is_file())
-			grand_total += current_total
+			folder_struct, folder_total = scan_dir(path_obj)
+
+			if folder_total > 0:
+				final_stats[path_obj.name] = folder_struct
+				grand_total += folder_total
+
 	final_stats["TOTAL_PROBLEMS"] = grand_total
+
 	print(json.dumps(final_stats, indent=4, ensure_ascii=False))
+	print(f"For: {DAYS} days")
 
 
-print_stats(PATH_DIR)
+if __name__ == "__main__":
+	print_stats(PATH_DIR)

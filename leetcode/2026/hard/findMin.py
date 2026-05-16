@@ -1,4 +1,21 @@
+import time
+from functools import wraps
 from typing import List
+
+
+
+def timer(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		start = time.time()
+		func(*args, **kwargs)
+		result = start - time.time()
+		return result
+	return wrapper
+
+
+
+
 
 
 class Solution:
@@ -15,7 +32,8 @@ class Solution:
 		return nums[left]
 
 
-
+	def only_min(self, nums: List[int]) -> int:
+		return min(nums)
 
 
 obj = Solution()
@@ -25,3 +43,5 @@ part_right = [5] * 2000
 
 test_case = part_left + target + part_right
 print(obj.findMin(test_case))
+print(timer(obj.findMin)(test_case))
+print(timer(obj.only_min)(test_case))

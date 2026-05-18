@@ -11,6 +11,8 @@ class Solution:
         def bfs(node, graph):
             queue = deque([(0, 0)])
             curr = node
+            visited = set()
+            visited.add(0)
             while queue:
                 next_steps = []
                 index, steps = queue.popleft()
@@ -23,11 +25,13 @@ class Solution:
                 for i in steps_map[arr[index]]:
                     if i != index:
                         next_steps.append(i)
+                steps_map[arr[index]] = []
                 for neigh in next_steps:
-                    queue.append((neigh, steps + 1))
-
+                    if neigh not in visited:
+                        visited.add(neigh)
+                        queue.append((neigh, steps + 1))
         return bfs(arr, 0)
- 
+
 
 obj = Solution()
 arr = [100,-23,-23,404,100,23,23,23,3,404]

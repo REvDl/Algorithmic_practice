@@ -24,7 +24,20 @@ class Solution:
                     break
         return current_common
 
-
+    def longestCommonPrefix(self, arr1: List[int], arr2: List[int]) -> int:
+        prefix_set = set()
+        for number in arr2:
+            while number > 0:
+                prefix_set.add(number)
+                number //= 10
+        current_common = 0
+        for j in arr1:
+            while j > 0:
+                if j in prefix_set:
+                    current_common = max(current_common, len(str(j)))
+                    break
+                j //= 10
+        return current_common
 
 
 

@@ -1,0 +1,39 @@
+from functools import cache
+
+
+
+
+class Solution:
+    @cache
+    def getWavinessSum(self, position:int, tight:bool, lastDigit:int, secondLastDigit:int, is_leading_zero: bool, count_waves: int, num2:int):
+        if position == len(str(num2)):
+            return count_waves
+        def is_tight(tight: bool, pos:int, num2:int):
+            if tight:
+                limit = int(str(num2)[pos])
+            else:
+                limit = 9
+            return limit
+        limit = is_tight(tight, position, num2)
+        waviness = 0
+        for digit in range(0, limit+1):
+            current_wave = 0
+            next_tight = tight and (digit == limit)
+            next_leading = is_leading_zero and (digit == 0)
+            if not is_leading_zero and lastDigit != -1 and secondLastDigit != -1 and lastDigit > digit and lastDigit > secondLastDigit:
+                current_wave = 1
+            elif not is_leading_zero and lastDigit != -1 and secondLastDigit != -1 and lastDigit < digit and lastDigit < secondLastDigit:
+                current_wave = 1
+            waviness += self.getWavinessSum(
+                position + 1,
+                next_tight,
+                digit if not next_leading else -1,
+                lastDigit if not next_leading else -1,
+                next_leading,
+                count_waves + current_wave,
+                num2)
+        return waviness
+
+
+    def totalWaviness(self, num1: int, num2: int) -> int:
+        return self.getWavinessSum(0, True, -1, -1, True, 0, num2) -  self.getWavinessSum(0, True, -1, -1, True, 0 , num1 - 1)

@@ -40,7 +40,6 @@ class Solution:
                         parent[next_p] = next_p + 1
                     next_p = find(next_p)
             return -1
-
         ans = []
         for u1, v1 in queries:
             if u1 == v1:
@@ -51,10 +50,54 @@ class Solution:
                 u2, v2 = v2, u2
             ans.append(get_dist(u2, v2, n, right_bound))
         return ans
+    def pathExistenceQueries_V2(self, n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[int]:
+        sorted_num = sorted((val, idx) for idx, val in enumerate(nums))
+        pos = [0] * n
+        for idx, (val, orig_idx) in enumerate(sorted_num):
+            pos[orig_idx] = idx
+        LOG = 18
+        up = [[n] * LOG for _ in range(n + 1)]
+        for k in range(LOG):
+            up[n][k] = n
+        right = 0
+        for left in range(n):
+            while right < n and sorted_num[right][0] - sorted_num[left][0] <= maxDiff:
+                right += 1
+            up[left][0] = right - 1
+        for k in range(1, LOG):
+            for i in range(n):
+                up[i][k] = up[up[i][k-1]][k-1]
+        ans = []
+        for u_orig, v_orig in queries:
+            if u_orig == v_orig:
+                ans.append(0)
+                continue
+            u = pos[u_orig]
+            v = pos[v_orig]
+            if u > v:
+                u, v = v, u
+            if up[u][LOG-1] < v:
+                ans.append(-1)
+                continue
+            curr = u
+            steps = 0
+            for k in range(LOG - 1, -1, -1):
+                if up[curr][k] < v:
+                    curr = up[curr][k]
+                    steps += (1 << k)
+            steps += 1
+            curr = up[curr][0]
+            if curr >= v:
+                ans.append(steps)
+            else:
+                ans.append(-1)
+        return ans
+
+
 
 obj = Solution()
 n = 5
-nums = [5,3,1,9,10]
+nums = [1,8,3,4,2]
 maxDiff = 3
 queries = [[0,3],[2,4]]
-print(obj.pathExistenceQueries(n, nums, maxDiff, queries))
+print(obj.pathExistenceQueries_V2(n, nums, maxDiff, queries))

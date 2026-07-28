@@ -1,7 +1,7 @@
 from collections import Counter, deque
 
 class Solution:
-    def smallestPalindrome(self, s: str) -> str:
+    def smallestPalindrome_v1(self, s: str) -> str:
         sorted_chars = sorted(s)
         count_chars = Counter(sorted_chars)
         pair_chars = deque()
@@ -20,8 +20,17 @@ class Solution:
         pair_chars = list(pair_chars)
         return "".join(pair_chars[:mid]) + "".join(one_chars) + "".join(pair_chars[mid:])
 
-
-
+    #optimized version
+    def smallestPalindrome(self, s: str) -> str:
+        count_chars = Counter(s)
+        center = ""
+        left = []
+        for char in "abcdefghijklmnopqrstuvwxyz":
+            left.append(char * (count_chars[char] // 2))
+            if count_chars[char] % 2 == 1 and not center:
+                center = char
+        left_str = "".join(left)
+        return left_str + center + left_str[::-1]
 
 
 obj = Solution()

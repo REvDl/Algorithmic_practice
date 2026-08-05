@@ -1,5 +1,5 @@
 from typing import Optional
-
+from collectins import deque
 
 
 class TreeNode:
@@ -12,7 +12,7 @@ class TreeNode:
 
 
 class Solution:
-    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+    def isSymmetric_dfs(self, root: Optional[TreeNode]) -> bool:
         def dfs(left_node, right_node):
             if not left_node and not right_node:
                 return True
@@ -23,6 +23,20 @@ class Solution:
             return dfs(left_node.left, right_node.right) and dfs(left_node.right, right_node.left)
         return dfs(root.left, root.right)
 
+
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        queue = deque([(root.left, root.right)])
+        while queue:
+            left, right = queue.popleft()
+            if not left and not right:
+                continue
+            if not left or not right:
+                return False
+            if left.val != right.val:
+                return False
+            queue.append([left.left, right.right])
+            queue.append([left.right, right.left])
+        return True            
 
         return dfs(root.left, root.right)
 obj = Solution()

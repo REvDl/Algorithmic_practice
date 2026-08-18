@@ -7,7 +7,11 @@ class Solution:
       for num in range(n+1):
         need_sum += num
       return need_sum - sum(nums)
-      
+
+  
+    def missingNumber_short(self, nums: List[int]) -> int:
+        n = len(nums)
+        return n * (n + 1) // 2 - sum(nums)
 
 
 

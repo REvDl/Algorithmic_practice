@@ -43,7 +43,8 @@ class Problem:
 
 
     def short_info(self) -> str:
-        return f"#{self.number:<4} | {self.name:<30} | [{self.level.upper()}]"
+        tags = f"({', '.join(sorted(self.categories))})" if self.categories else ""
+        return f"#{self.number:<4} | {self.name:<25} | [{self.level.upper():<6}] | {tags}"
 
 
 class CatalogManager:
@@ -55,7 +56,7 @@ class CatalogManager:
         self._collection[problem.number] = problem
 
     
-    def read_problem_by_number(self, number: int) -> Problem | None:
+    def read_problem_by_number(self, number: int) -> Problem | str:
         return self._collection.get(number) or "Problem not found."
 
 
@@ -88,8 +89,35 @@ and you may not use the same element twice.
 You can return the answer in any order."""
 
 
-problem_two_sum = Problem(number=1, name="Two Sum", description=description_two_sum, level="easy", categories={"Junior", "Array"})
+problem_two_sum = Problem(
+    number=1, 
+    name="Two Sum",
+    description=description_two_sum,
+    level="easy", 
+    categories={"Junior", "Array"}
+)
+
+
+description_add_two_numbers = """
+You are given two non-empty linked lists
+representing two non-negative integers.
+The digits are stored in reverse order, 
+and each of their nodes contains a single digit.
+Add the two numbers and return the sum as a linked list.
+You may assume the two numbers do not contain any leading zero,
+except the number 0 itself.
+"""
+
+
+problem_add_two_numbers = Problem(
+    number=2, 
+    name="Add Two Numbers", 
+    description=description_add_two_numbers, 
+    level="Medium", 
+    categories={"Principal", "Linked List", "Math", "Recursion"}
+)
+
 leetcode.add_problem(problem_two_sum)
-print(problem_two_sum.short_info())
+leetcode.add_problem(problem_add_two_numbers)
 print(leetcode.read_all_problems())
 

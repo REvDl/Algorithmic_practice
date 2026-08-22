@@ -21,7 +21,7 @@ class Problem:
         valid_levels = ["easy", "medium", "hard"]
         complexity_clean = complexity.lower().strip()
         if complexity_clean not in valid_levels:
-            raise ValueError(f"Level can't be {complexity}, choose from {valid_levels}")
+            raise ValueError(f"Level can't be {complexity}, choose from {valid_levels}.")
         self._level = complexity_clean
     
 
@@ -42,6 +42,9 @@ class Problem:
         return f"Problem(number={self.number}, name={self.name!r}, level={self.level!r}), description={self.description!r}"
 
 
+    def short_info(self) -> str:
+        return f"#{self.number:<4} | {self.name:<30} | [{self.level.upper()}]"
+
 
 class CatalogManager:
     def __init__(self):
@@ -52,14 +55,22 @@ class CatalogManager:
         self._collection[problem.number] = problem
 
     
-    def read_problem_by_number(self, number: int) -> set:
-        return self._collection.get(number) or "Problem not found"
+    def read_problem_by_number(self, number: int) -> Problem | None:
+        return self._collection.get(number) or "Problem not found."
+
+
+    def read_all_problems(self) -> str:
+        if not self._collection:
+            return "Catalog is empty."
+        
+        problems = self._collection.values() if isinstance(self._collection, dict) else self._collection
+        return "\n".join(p.short_info() for p in problems)
 
 
     def delete_by_number(self, number:int) -> None:
-        self._collection.pop(number, none)
+        self._collection.pop(number, None)
 
-    def sort_by_categories(self, categories: set) -> list[set]:
+    def sort_by_categories(self, categories: set) -> list[Problem]:
         return [p for p in self._collection.values()
             if categories <= p.categories
         ]
@@ -79,5 +90,6 @@ You can return the answer in any order."""
 
 problem_two_sum = Problem(number=1, name="Two Sum", description=description_two_sum, level="easy", categories={"Junior", "Array"})
 leetcode.add_problem(problem_two_sum)
-print(leetcode.read_problem_by_number(2))
+print(problem_two_sum.short_info())
+print(leetcode.read_all_problems())
 

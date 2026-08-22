@@ -43,6 +43,31 @@ class Problem:
 
 
 
+class CatalogManager:
+    def __init__(self):
+        self._collection: dict[int, Problem] = {}
+
+    
+    def add_problem(self, problem: Problem) -> None:
+        self._collection[problem.number] = problem
+
+    
+    def read_problem_by_number(self, number: int) -> set:
+        return self._collection.get(number) or "Problem not found"
+
+
+    def delete_by_number(self, number:int) -> None:
+        self._collection.pop(number, none)
+
+    def sort_by_categories(self, categories: set) -> list[set]:
+        return [p for p in self._collection.values()
+            if categories <= p.categories
+        ]
+
+
+
+leetcode = CatalogManager()
+
 description_two_sum = """
 You are given an array of integers nums and an 
 integer target, return indices of the 
@@ -52,19 +77,7 @@ and you may not use the same element twice.
 You can return the answer in any order."""
 
 
-leetcode = Problem(number=1, name="Two Sum", description=description_two_sum, level="easy", categories={"Junior", "Array"})
-print(leetcode)
+problem_two_sum = Problem(number=1, name="Two Sum", description=description_two_sum, level="easy", categories={"Junior", "Array"})
+leetcode.add_problem(problem_two_sum)
+print(leetcode.read_problem_by_number(2))
 
-
-class CatalogManager:
-    def __init__(self):
-        self._collection = []
-
-    
-    def add_problem(self, problem: Problem):
-        self.collection.append(problem)
-
-
-    def delete_by_number(self, number:int):
-        initial_count = len(self._collection)
-        self._collection = [p for p in self._collection if p.number != number]

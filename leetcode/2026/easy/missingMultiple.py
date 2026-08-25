@@ -4,11 +4,12 @@ from typing import List
 
 class Solution:
     def missingMultiple(self, nums: List[int], k: int) -> int:
-        multiple = 1
+        multiple = k
+        nums_set = set(nums)
         while True:
-            if multiple not in nums and multiple % k == 0:
+            if multiple not in nums_set:
                 return multiple
-            multiple += 1
+            multiple += k
 
 
 

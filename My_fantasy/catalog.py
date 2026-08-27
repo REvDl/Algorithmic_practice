@@ -76,6 +76,10 @@ class CatalogManager:
             if categories <= p.categories
         ]
 
+    def filter_by_level(self, level: str) -> list[Problem] | None:
+      clean_level = level.lower().strip()
+      return [p for p in self._collection.values()]
+
 
 
 leetcode = CatalogManager()

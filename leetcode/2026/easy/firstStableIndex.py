@@ -3,17 +3,20 @@
 class Solution:
     def firstStableIndex(self, nums: list[int], k: int) -> int:
         n = len(nums)
-        res = float("inf")
+        prefix_max = [0] * n
+        prefix_max[0] = nums[0]
+        for i in range(1, n):
+            prefix_max[i] = max(prefix_max[i - 1], nums[i])
+        suffix_min = [float("inf")] * n
+        suffix_min[-1] = nums[-1]
+        for i in range(n-2, -1, -1):
+            suffix_min[i] = min(suffix_min[i+1], nums[i])
         for i in range(n):
-            stable_index = max(nums[0:i+1], default=nums[0]) - min(nums[i:n], default=0)
-            if stable_index <= k:
-                res = min(i, res)
-        return res if res != float("inf") else -1
-
-
-
+            if prefix_max[i] - suffix_min[i] <= k:
+                return i
+        return -1
 
 obj = Solution()
-nums = [0]
-k = 0
+nums = [3,2,1]
+k = 1
 print(obj.firstStableIndex(nums, k))

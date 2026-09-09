@@ -10,7 +10,7 @@ class Solution:
         return one_comma + two_comma + three_comma + fourth_comma + five_comma
 
 
-    def countCommas(self, n: int) -> int:
+    def countCommas_v2(self, n: int) -> int:
         diff_numbers = [
             999, 
             999_999, 
@@ -19,7 +19,21 @@ class Solution:
             999_999_999_999_999, 
             999_999_999_999_999_999
                         ]
-        return sum([max(n - num_for_diff, 0) for num_for_diff in diff_numbers]
+        return sum([max(n - num_for_diff, 0) for num_for_diff in diff_numbers])
+
+
+    def countCommas(self, n: int) -> int:
+        res = 0
+        for num in [
+            999, 999_999, 999_999_999, 
+            999_999_999_999, 999_999_999_999_999
+        ]:
+            commas = max(n - num, 0)
+            if commas == 0:
+                break
+            res += commas
+        return res
+
 
 
 obj = Solution()

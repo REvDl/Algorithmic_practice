@@ -39,7 +39,7 @@ class Solution:
         return res
 
     
-    def averageOfSubtree(self, root: TreeNode) -> int:
+    def averageOfSubtree_v2(self, root: TreeNode) -> int:
         count = 0
         def dfs(node: TreeNode) -> tuple[int, int]:
             if not node:
@@ -56,3 +56,24 @@ class Solution:
             return total_sum, total_count
         dfs(root)
         return count
+
+
+    def averageOfSubtree(self, root: TreeNode) -> int:
+        def dfs(node: TreeNode) -> tuple[int, int]:
+            if not node:
+                return (0,0)
+            left_sum, left_count = dfs(node.left)
+            right_sum, right_count = dfs(node.right)
+
+            total_sum = left_sum + right_sum + node.val
+            total_count = left_count + right_count + 1
+
+            if total_sum // total_count == node.val:
+                dfs.count += 1
+            return total_sum, total_count
+        dfs.count = 0
+        dfs(root)
+        return dfs.count
+
+
+

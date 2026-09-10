@@ -25,7 +25,7 @@ class Solution:
         return res // count
 
 
-    def averageOfSubtree(self, root: TreeNode) -> int:
+    def averageOfSubtree_v1(self, root: TreeNode) -> int:
         stack = [root]
         res = 0
         while stack:
@@ -37,3 +37,22 @@ class Solution:
                 if curr.right:
                     stack.append(curr.right)
         return res
+
+    
+    def averageOfSubtree(self, root: TreeNode) -> int:
+        count = 0
+        def dfs(node: TreeNode) -> tuple[int, int]:
+            if not node:
+                return (0,0)
+            left_sum, left_count = dfs(node.left)
+            right_sum, right_count = dfs(node.right)
+
+            total_sum = left_sum + right_sum + node.val
+            total_count = left_count + right_count + 1
+
+            if total_sum // total_count == node.val:
+                nonlocal count
+                count += 1
+            return total_sum, total_count
+        dfs(root)
+        return count

@@ -3,17 +3,10 @@ import math
 
 class Solution:
     def checkOverlap(self, radius: int, xCenter: int, yCenter: int, x1: int, y1: int, x2: int, y2: int) -> bool:
-        closest_point = [x1, y1]
-        if xCenter < x1: closest_point[0] = x1
-        elif xCenter < x2: closest_point[0] = xCenter
-        else: closest_point[0] = x2
-        if yCenter < y1: closest_point[1] = y1
-        elif yCenter < y2: closest_point[1] = yCenter
-        else: closest_point[1] = y2
-        distance_1 = math.dist(closest_point, (xCenter, yCenter))
-        if distance_1 <= radius:
-            return True
-        return False
+        position_x = max(x1, min(xCenter, x2))
+        position_y = max(y1, min(yCenter, y2))
+        distance = math.dist((position_x, position_y), (xCenter, yCenter))
+        return distance <= radius
 
 
 obj = Solution()

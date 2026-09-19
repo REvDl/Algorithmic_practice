@@ -1,15 +1,19 @@
+import math
 
 
 class Solution:
     def checkOverlap(self, radius: int, xCenter: int, yCenter: int, x1: int, y1: int, x2: int, y2: int) -> bool:
-        coords_circle = [(xCenter + radius, yCenter), (xCenter, yCenter + radius), (xCenter - radius, yCenter), (xCenter, yCenter - radius)]
-        coords_square = [(x1, y1), (x2, y2), (x2, y1), (x1, y2)]
-        for circle in coords_circle:
-            for square in coords_square:
-                if circle[0] <= square[0] and circle[1] <= square[1]:
-                    return True
+        closest_point = [x1, y1]
+        if xCenter < x1: closest_point[0] = x1
+        elif xCenter < x2: closest_point[0] = xCenter
+        else: closest_point[0] = x2
+        if yCenter < y1: closest_point[1] = y1
+        elif yCenter < y2: closest_point[1] = yCenter
+        else: closest_point[1] = y2
+        distance_1 = math.dist(closest_point, (xCenter, yCenter))
+        if distance_1 <= radius:
+            return True
         return False
-
 
 
 obj = Solution()

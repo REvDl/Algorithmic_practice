@@ -6,14 +6,17 @@ from collections import Counter
 class Solution:
     def resultArray(self, nums: List[int], k: int) -> List[int]:
         n = len(nums)
-        arrays = []
-        for i in range(n):
-            for j in range(i, n):
-                arrays.append(math.prod(nums[i:j+1]) % k)
-        count = Counter(arrays)
-        res = []
-        for i in range(0, k):
-            res.append(count[i])
+        res = [0] * k
+        dp = [0] * k
+        for num in nums:
+            next_dp = [0] * k
+            for j in range(k):
+                new_rem = (j * num) % k
+                next_dp[new_rem] += dp[j]
+            next_dp[num % k] += 1
+            for r in range(k):
+                res[r] += next_dp[r]
+            dp = next_dp
         return res
 
 obj = Solution()

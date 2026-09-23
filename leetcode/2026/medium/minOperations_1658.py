@@ -1,34 +1,33 @@
-
+from itertools import product
 
 class Solution:
     def minOperations(self, nums: list[int], x: int) -> int:
-        ans = 0
         n = len(nums)
-        left, right = 0, n - 1
-        while True:
-            if left > right:
-                break
-            num_left = nums[left]
-            num_right = nums[right]
-            ans += 1
-            if num_left >= num_right and x - num_left >= 0:
-                x -= num_left
-                left += 1
-            elif num_right > num_left and x - num_right >= 0:
-                x -= num_right
-                right -= 1
-            elif x - num_left >= 0:
-                x -= num_left
-                left += 1
-            elif x - num_right >= 0:
-                x -= num_right
-                right -= 1
-            else:
-                ans -= 1
-                break
-        return ans if x == 0 else -1
+        ans = float('inf')
+        prefix_sum, suffix_sum = [0] * (n + 1), {}
+        for i in range(n):
+            prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+        curr_sum = 0
+        for i in range(n - 1, -1, -1):
+            curr_sum += nums[i]
+            suffix_sum[curr_sum] = n - i
+        suffix_sum[0] = 0
+
+        for i, p in enumerate(prefix_sum):
+            if (x - p) in suffix_sum and i + suffix_sum[x-p] <= n:
+                ans = min(ans, suffix_sum[x-p] + i)
+        return ans if ans != float('inf') else -1
+
+
+
+
+
+
+
+
+
 
 obj = Solution()
-nums = [1,1,4,2,3]
-x = 5
+nums =[3,2,20,1,1,3]
+x = 10
 print(obj.minOperations(nums, x))

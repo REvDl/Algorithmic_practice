@@ -11,12 +11,13 @@ class Solution:
 
 
     def smallestIndex(self, nums: List[int]) -> int:
-        ans = float('inf')
         for idx, num in enumerate(nums):
             res = self._sum_num(num)
             if res == idx:
-                ans = min(ans, idx)
-        return ans if ans != float('inf') else -1
+                return idx
+        return -1
+
+
 
 obj = Solution()
 nums = [1,11,11]

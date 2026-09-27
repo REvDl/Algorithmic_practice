@@ -2,20 +2,20 @@ import re
 
 class Solution:
     def evaluate(self, s: str, knowledge: list[list[str]]) -> str:
-        kl = dict(knowledge)
-        curr_key = []
         res = ""
-        brace = False
+        kl = dict(knowledge)
+        current_key = []
+        is_brace = False
         for char in s:
             if char == "(":
-                brace = True
+                is_brace = True
             elif char == ")":
-                res += kl.get("".join(curr_key), "?")
-                curr_key = []
-                brace = False
+                res += kl.get("".join(current_key), "?")
+                current_key = []
+                is_brace = False
             else:
-                if brace:
-                    curr_key.append(char)
+                if is_brace:
+                    current_key.append(char)
                 else:
                     res += char
         return res

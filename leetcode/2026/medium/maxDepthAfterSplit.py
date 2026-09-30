@@ -2,22 +2,22 @@
 
 class Solution:
     def maxDepthAfterSplit(self, seq: str) -> list[int]:
-        open_brace = False
-        closed_brace = False
         res = []
+        first_brace = False
+        second_brace = False
         for char in seq:
-            if char == "(" and open_brace:
-                res.append(1)
-                open_brace = False
-            elif char == "(" and not open_brace:
+            if char == "(" and not first_brace:
                 res.append(0)
-                open_brace = True
-            elif char == ")" and closed_brace:
-                res.append(1)
-                closed_brace = False
-            elif char == ")" and not closed_brace:
+                first_brace = True
+            elif char == ")" and not second_brace:
                 res.append(0)
-                closed_brace = True
+                second_brace = True
+            elif char == "(" and first_brace:
+                res.append(1)
+                first_brace = False
+            elif char == ")" and second_brace:
+                res.append(1)
+                second_brace = False
         return res
 
 

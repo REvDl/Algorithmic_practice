@@ -2,21 +2,21 @@
 
 class Solution:
     def isValid(self, s: str) -> bool:
-        valid = {
+        closing_brackets = {
             ")": "(",
             "}": "{",
             "]": "["
         }
         stack = []
         for char in s:
-            if char in valid:
+            if char not in closing_brackets:
+                stack.append(char)
+            else:
                 if not stack:
                     return False
-                if valid[char] != stack[-1]:
+                element = stack.pop()
+                if closing_brackets[char] != element:
                     return False
-                stack.pop()
-            else:
-                stack.append(char)
         return len(stack) == 0
 
 

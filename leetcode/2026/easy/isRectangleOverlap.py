@@ -22,6 +22,16 @@ class Solution:
         S = (res_x_y_right[0] - res_x_y_left[0]) * (res_x_y_right[1] - res_x_y_left[1])
         return S > 0
 
+    def isRectangleOverlap_v2(self, rec1: list[int], rec2: list[int]) -> bool:
+        x1, y1, x2, y2 = rec1
+        x3, y3, x4, y4 = rec2
+
+        if not (
+            x1 < x4 and x2 > x3 and
+            y1 < y4 and y2 > y3):
+            return False
+        return True
+
 
 
 obj = Solution()

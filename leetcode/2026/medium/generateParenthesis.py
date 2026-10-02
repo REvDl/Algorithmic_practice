@@ -15,18 +15,11 @@ class Solution:
     def generateParenthesis(self, n: int) -> list[str]:
         base_string = "()" * n
         res = []
-        visited = set()
-        for brackets in permutations(base_string, n * 2):
-            bracke = "".join(brackets)
-            if bracke in visited:
-                continue
-            if self.isValid(bracke):
-                res.append(bracke)
-                visited.add(bracke)
-            else:
-                continue
+        unique_permutations = set("".join(p) for p in permutations(base_string))
+        for brake in unique_permutations:
+            if self.isValid(brake):
+                res.append(brake)
         return res
-
 
 
 obj = Solution()

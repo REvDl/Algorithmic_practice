@@ -1,23 +1,11 @@
 from itertools import permutations
 
 class Solution:
-    def isValid(self, s: list) -> bool:
-        count = 0
-        for char in s:
-            if char == "(":
-                count += 1
-            else:
-                count -= 1
-            if count < 0:
-                return False
-        return count == 0
-
     def generateParenthesis(self, n: int) -> list[str]:
         res = []
         def generateParent(s: str, open_count: int, closed_count: int):
-            nonlocal res
             if len(s) == n * 2:
-                if self.isValid(s):
+                if open_count == n:
                     res.append(s)
                 return
             if open_count >= closed_count:

@@ -2,20 +2,18 @@
 
 class Solution:
     def scoreOfParentheses(self, s: str) -> int:
-        stack = []
-        term = 0
+        stack = [0]
         res = 0
+        curr = 0
         for char in s:
             if char == "(":
-                stack.append(1)
+                stack.append(0)
             else:
-                num = stack.pop()
-                res += num * 2
-        return res
-
-
-
+                last = stack.pop()
+                stack[-1] += last * 2 if last != 0 else 1
+        return stack[-1]
 
 obj = Solution()
-s = "(()())"
-print(obj.scoreOfParentheses(s))
+s = ["()", "()()", "(()())", "(()()())", "(()()(((())(((()))))))"]
+for char in s:
+    print(obj.scoreOfParentheses(char))

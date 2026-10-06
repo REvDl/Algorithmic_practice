@@ -3,14 +3,14 @@
 class Solution:
     def minAddToMakeValid(self, s: str) -> int:
         count = 0
-        stack = []
+        open_bracke = 0
         for char in s:
             if char == "(":
-                stack.append(char)
+                open_bracke += 1
                 count += 1
             else:
-                if stack:
-                    stack.pop()
+                if open_bracke > 0:
+                    open_bracke -= 1
                     count -= 1
                 else:
                     count += 1
@@ -22,7 +22,7 @@ class Solution:
 
 
 obj = Solution()
-s = ["()))((", "()(", ")))"]
+s = ["()))((", "()(", ")))", "()))(())))))(()"]
 for char in s:
     print(obj.minAddToMakeValid(char))
 

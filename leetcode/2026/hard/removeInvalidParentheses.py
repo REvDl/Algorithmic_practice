@@ -13,10 +13,10 @@ class Solution:
         return count == 0
 
     def removeInvalidParentheses(self, s: str) -> list[str]:
-        res = set()
+        valid_brackes = set()
         def removeForValid(s: str):
             if self.isValid(s):
-                res.add(s)
+                valid_brackes.add(s)
             for i, char in enumerate(s):
                 if char not in ["(", ")"]:
                     continue
@@ -24,14 +24,14 @@ class Solution:
                 removeForValid(substring)
             return
         removeForValid(s)
-        need_len = max(res)
-        answer = []
-        for valid_string in res:
-            if len(valid_string) == need_len:
-                answer.append(valid_string)
-        return answer
-
+        res = []
+        longest_valid_item = max(valid_brackes, key=lambda x: x.count("(") + x.count(")"))
+        need_len = longest_valid_item.count("(") + longest_valid_item.count(")")
+        for valid_bracke in valid_brackes:
+            if valid_bracke.count("(") + valid_bracke.count(")") == need_len:
+                res.append(valid_bracke)
+        return res
 
 obj = Solution()
-s = "()()()()))"
+s = "(a)b(c)d(e)f(g"
 print(obj.removeInvalidParentheses(s))

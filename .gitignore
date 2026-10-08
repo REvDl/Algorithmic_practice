@@ -21,6 +21,7 @@ three.png
 four.png
 five.png
 *.png
+*.env
 
 
 My_fantasy/TrackWebcam/face_landmarker.task

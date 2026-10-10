@@ -3,18 +3,25 @@
 class Solution:
     def resilientSubarray(self, nums: list[int], k: int) -> int:
         max_len = 0
+        curr_len = 0
         n = len(nums)
         for i in range(n):
-            for j in range(i, n):
-                curr_sub = nums[i:j+1]
-                if len(curr_sub) == 1:
-                    max_len = max(max_len, 1)
-                    continue
-                else:
-                    curr_sum = sum(curr_sub)
-                    if all((curr_sum - num) % k == 0 for num in curr_sub):
-                        max_len = max(max_len, len(curr_sub))
+            r = nums[i] % k
+            if i == 0 or r == (nums[i-1] % k):
+                curr_len += 1
+                if (curr_len - 1) * r % k == 0:
+                    max_len = max(max_len, curr_len)
+            else:
+                if (curr_len - 1) * (nums[i-1] % k) % k == 0:
+                    max_len = max(max_len, curr_len)
+                curr_len = 1
+        if (curr_len - 1) * (nums[-1] % k) % k == 0:
+            max_len = max(max_len, curr_len)
+        else:
+            max_len = max(max_len, 1) 
         return max_len
+
+
 
 
 obj = Solution()

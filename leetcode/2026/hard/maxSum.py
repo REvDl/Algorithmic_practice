@@ -4,20 +4,24 @@ from typing import List
 class Solution:
     def maxSum(self, nums: List[int], k: int) -> int:
         n = len(nums)
-        max_n, min_n = max(nums), min(nums)
-        for i in range(n):
-            for j in range(i, n):
-                and_num = nums[i] & nums[j]
-                or_num = nums[i] | nums[j]
-                nums[i] = and_num
-                nums[j] = or_num
+        MOD = 10**9 + 7
+        bits = [0] * 30
+        for num in nums:
+            for i in range(30):
+                if (num >> i) & 1:
+                    bits[i] += 1
+
         res = 0
-        for i in range(n - 1, -1, -1):
-            if k != 0:
-                res += nums[i] ** 2
-                k -= 1
-        return res % (10 ** 9 + 7)
-    
+        for _ in range(k):
+            num = 0
+            for i in range(30):
+                if bits[i] > 0:
+                    num += 1 << i
+                    bits[i] -= 1
+            res += (num ** 2) % MOD
+        return res % MOD
+
+
 
 
 obj = Solution()

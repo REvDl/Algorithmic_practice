@@ -4,8 +4,8 @@ import time
 import random
 
 
-def random_array(range_of: int, size: int) -> list[int]:
-    return random.sample(range(range_of), size)
+def random_array(start: int, stop: int, size: int) -> list[int]:
+    return random.choices(range(start, stop+1), k=size)
 
 def timer(func):
     @wraps(func)
@@ -44,14 +44,34 @@ class Solution:
             else:
                 res -= (current_element) ** 2
         return res
+   
+
+    @timer
+    def maxAlternatingSum_v3(self, nums: List[int]) -> int:
+        squared = sorted(x * x for x in nums)
+        n = len(squared)
+        left, right = 0, n - 1
+        plus = True
+        res = 0
+        while left <= right:
+            if plus:
+                res += squared[right]
+                right -= 1
+            else:
+                res -= squared[left]
+                left += 1
+            plus = not plus
+        return res
+
 
 
 def reusable_check(range_of: int, obj: Solution, test_case: list[int]):
     result = {
         "v1": [],
-        "v2": []
+        "v2": [],
+        "v3": []
     }
-    v1_count, v2_count = 0, 0
+    v1_count, v2_count, v3_count = 0, 0, 0
     for _ in range(range_of):
         v1_res = obj.maxAlternatingSum_v1(test_case, silent=True)
         v1_time = obj.maxAlternatingSum_v1.execution_time
@@ -59,13 +79,18 @@ def reusable_check(range_of: int, obj: Solution, test_case: list[int]):
         v2_res = obj.maxAlternatingSum(test_case, silent=True)
         v2_time = obj.maxAlternatingSum.execution_time
         
+        v3_res = obj.maxAlternatingSum_v3(test_case, silent=True)
+        v3_time = obj.maxAlternatingSum_v3.execution_time
+
         result["v1"].append(f"{v1_time}MSC")
         v1_count += v1_time
         result["v2"].append(f"{v2_time}MSC")
         v2_count += v2_time
-    return v1_count / len(result["v1"]), v2_count / len(result["v2"]), result
+        result["v3"].append(f"{v3_time}MSC")
+        v3_count += v3_time
+    return v1_count / len(result["v1"]), v2_count / len(result["v2"]), v3_count / len(result["v3"])
 
 obj = Solution()
-nums = random_array(100000000, 60)
+nums = random_array(-4 * 10**4, 4 * 10**4, 10**5)
 
-print(reusable_check(10, obj, nums+nums+nums))
+print(reusable_check(10, obj, nums))

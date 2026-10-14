@@ -5,22 +5,21 @@ class Solution:
         len_sum = len(str(sum_leetcode))
         if num < len_sum:
             return ""
-        res = ""
-        while True:
-            if sum_leetcode > 9:
-                res += "9"
-                sum_leetcode -= 9
-            else:
-                res += str(sum_leetcode)
-                break
-        if len(res) > num:
+        
+        need_nines = sum_leetcode // 9
+        nines_list = ["9" for _ in range(need_nines)]
+        remainder_number = str(sum_leetcode % 9)
+        if remainder_number != "0":
+            nines_list.append(remainder_number)
+        len_nines = len(nines_list)
+        if len_nines > num:
             return ""
-        while len(res) < num:
-            res += "0"
-        return res
-
+        while len_nines < num:
+            nines_list.append("0")
+            len_nines += 1
+        return "".join(nines_list)
 
 obj = Solution()
-num = 2
-sum_leetcode = 19
+num = 1
+sum_leetcode = 9
 print(obj.maxSumOfSquares(num, sum_leetcode))

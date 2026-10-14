@@ -2,24 +2,18 @@
 
 class Solution:
     def maxSumOfSquares(self, num: int, sum_leetcode: int) -> str:
-        len_sum = len(str(sum_leetcode))
-        if num < len_sum:
+        nines = "9" * (sum_leetcode // 9)
+        remainder = str(sum_leetcode % 9)
+        if remainder != '0':
+            nines += remainder
+        if len(nines) > num:
             return ""
-        
-        need_nines = sum_leetcode // 9
-        nines_list = ["9" for _ in range(need_nines)]
-        remainder_number = str(sum_leetcode % 9)
-        if remainder_number != "0":
-            nines_list.append(remainder_number)
-        len_nines = len(nines_list)
-        if len_nines > num:
-            return ""
-        while len_nines < num:
-            nines_list.append("0")
-            len_nines += 1
-        return "".join(nines_list)
+        res = nines.ljust(num, "0")
+        return res
+
+
 
 obj = Solution()
 num = 1
-sum_leetcode = 9
+sum_leetcode = 15
 print(obj.maxSumOfSquares(num, sum_leetcode))

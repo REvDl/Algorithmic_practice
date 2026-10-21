@@ -1,36 +1,40 @@
-from typing import List
+from collections import defaultdict
+
 
 
 class Solution:
-	def minOperations(self, grid: List[List[int]], x: int) -> int:
-		arr_grid = [item for arr in grid for item in arr]
-		arr_grid.sort()
-		steps = 0
-		median = arr_grid[len(arr_grid) // 2]
-		for item in arr_grid:
-			step = abs(item - median)
-			if step % x != 0:
-				return -1
-			steps += step // x
-		return steps
+    def minOperations(self, s: str) -> int:
+        sort_s = "".join(sorted(s))
+        n = len(s)
+        if s == sort_s:
+            return 0
+        if n <= 2:
+            return -1
+        chars = defaultdict(list)
+        lvl = 0
+        last_idx = 0
+        for i in range(1, n - 1):
+            curr, next = s[i-1], s[i]
+            if i - last_idx > 1:
+                lvl += 1
+            if curr > next:
+                chars[lvl].append(curr)
+                last_idx = i - 1
+        if (n - 1) - last_idx > 1:
+            lvl += 1
+        if s[-2] > s[-1]:
+            chars[lvl].append(s[-2])
+        res = len(chars)
+        if res == 1:
+            return 1
+        elif res == 2:
+            return 2
+        else:
+            return 3
 
-
-	def minOperations_v2(self, grid: List[List[int]], x: int) -> int:
-		arr_grid = [item for arr in grid for item in arr]
-		for item in arr_grid:
-			if (arr_grid[0] - item) % x != 0:
-				return -1
-		arr_grid.sort()
-		median = arr_grid[len(arr_grid) // 2]
-		step = 0
-		for item in arr_grid:
-			step += abs(item - median) // x
-		return step
-
-
-
-
+s2 = "cbarcba"
 obj = Solution()
-grid = [[2,4],[6,8]]
-x = 2
-print(obj.minOperations(grid, x))
+print(obj.minOperations(s2))
+s = ["dog", "card"]
+for chr in s:
+    print(obj.minOperations(chr))

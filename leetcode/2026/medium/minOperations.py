@@ -10,31 +10,28 @@ class Solution:
             return 0
         if n <= 2:
             return -1
-        chars = defaultdict(list)
-        lvl = 0
-        last_idx = 0
-        for i in range(1, n - 1):
-            curr, next = s[i-1], s[i]
-            if i - last_idx > 1:
-                lvl += 1
-            if curr > next:
-                chars[lvl].append(curr)
-                last_idx = i - 1
-        if (n - 1) - last_idx > 1:
-            lvl += 1
-        if s[-2] > s[-1]:
-            chars[lvl].append(s[-2])
-        res = len(chars)
-        if res == 1:
+        if s[0] == sort_s[0] or s[-1] == sort_s[-1]:
             return 1
-        elif res == 2:
-            return 2
-        else:
+        if s[0] == sort_s[-1] and s[-1] == sort_s[0] and sort_s[0] not in s[1:-1] and sort_s[-1] not in s[1:-1]:
             return 3
+        return 2
 
-s2 = "cbarcba"
+# 101 100 99
+# 101 99 100
+# 99 101 100
+# 111 111 111 108
+# 106 103 103
+# 101 100 98 99
+# 99 97 98
+# 97 98 100
+
+s = "cbarcba"
+ord_list = [str(ord(chr)) for chr in s]
+print(" ".join(ord_list))
+
+
+
 obj = Solution()
-print(obj.minOperations(s2))
-s = ["dog", "card"]
+s = ["dog", "card", "edc", "oool", "onon", "jgg", "edbc"]
 for chr in s:
     print(obj.minOperations(chr))

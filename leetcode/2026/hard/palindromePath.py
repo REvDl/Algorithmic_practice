@@ -51,6 +51,66 @@ class SegmentTree:
         p2 = self._query(right_child, mid + 1, tr, l, r)
         return p1 ^ p2
 
+    def add(self, idx, delta):
+        self._add(1, 0, self.n - 1, idx, delta)
+
+    def _add(self, node, l, r, idx, delta):
+        if l == r:
+            self.arr[node] ^= delta
+            return
+        mid = (l + r) // 2
+        if idx <= mid:
+            self._add(2 * node, l, mid, idx, delta)
+        else:
+            self._add(2 * node + 1, mid + 1, r, idx, delta)
+        self.arr[node] = self.arr[2 * node] ^ self.arr[2 * node + 1]
+
+
+import math
+
+class LCA:
+    def __init__(self, n, adj, s, root=0):
+        self.LOG = int(math.log2(n)) + 1
+        self.up = [[-1] * self.LOG for _ in range(n)]
+        self.tin = [0] * n
+        self.tout = [0] * n
+        self.timer = 0
+        self.euler_nodes = []
+        self.base = [0] * n
+        self.s = s
+        self.dfs(root, root, adj)
+
+    def dfs(self, v, p, adj):
+        self.tin[v] = self.timer
+        self.timer += 1
+        self.euler_nodes.append(v)
+        self.base[v] = (self.base[p] if v != p else 0) ^ (1 << (ord(self.s[v]) - ord('a')))
+        self.up[v][0] = p
+        for i in range(1, self.LOG):
+            if self.up[v][i-1] != -1:
+                self.up[v][i] = self.up[self.up[v][i-1]][i-1]
+                
+        for to in adj[v]:
+            if to != p:
+                self.dfs(to, v, adj)
+                
+        self.tout[v] = self.timer
+        self.timer += 1
+
+    def is_ancestor(self, u, v):
+        return self.tin[u] <= self.tin[v] and self.tout[u] >= self.tout[v]
+
+    def get_lca(self, u, v):
+        if self.is_ancestor(u, v):
+            return u
+        if self.is_ancestor(v, u):
+            return v
+        for i in range(self.LOG - 1, -1, -1):
+            if self.up[u][i] != -1 and not self.is_ancestor(self.up[u][i], v):
+                u = self.up[u][i]
+        return self.up[u][0]
+
+
 
 
 class Solution:
@@ -60,35 +120,33 @@ class Solution:
         for u, v in edges:
             adj[u].append(v)
             adj[v].append(u)
-        euler = []
-        first_pos = [-1] * n
-        last_pos = [-1] * n
-        def dfs(node, parent):
-            first_pos[node] = len(euler)
-            euler.append(s[node])
-            for neighbor in adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node)
-            last_pos[node] = len(euler)
-            euler.append(s[node])
-        dfs(0, -1)
+        lca = LCA(n, adj, s, 0)
+        segment = SegmentTree(2 * n + 2, ["a"] * (2 * n + 2))
+        segment.arr = [0] * len(segment.arr)
         answer = []
-        segment = SegmentTree(n * 2, euler)
         for query in queries:
-            if query[0] == "q":
-                _, u_str, v_str = query.split()
-                u, v = int(u_str), int(v_str)
-                mask = segment.query(min(first_pos[u], first_pos[v]), max(first_pos[u], first_pos[v]))
+            parts = query.split()
+            if parts[0][0] == "q":
+                u, v = int(parts[1]), int(parts[2])
+                w = lca.get_lca(u, v)
+                val_u = lca.base[u] ^ segment.query(0, lca.tin[u])
+                val_v = lca.base[v] ^ segment.query(0, lca.tin[v])
+                mask = val_u ^ val_v ^ (1 << (ord(s[w]) - 97))
                 if mask == 0 or (mask & (mask - 1)) == 0:
                     answer.append(True)
                 else:
                     answer.append(False)
-            elif query[0] == "u":
-                _, idx_str, chr = query.split()
-                idx = int(idx_str)
-                segment.update(first_pos[idx], chr)
-                segment.update(last_pos[idx], chr)
+            elif parts[0][0] == "u":
+                idx = int(parts[1])
+                chr_val = parts[2]
+                delta = (1 << (ord(s[idx]) - 97)) ^ (1 << (ord(chr_val) - 97))
+                segment.add(lca.tin[idx], delta)
+                segment.add(lca.tout[idx] + 1, delta)
+                s = s[:idx] + chr_val + s[idx + 1:]
         return answer
+
+
+
 
 
 obj = Solution()

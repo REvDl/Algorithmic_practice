@@ -3,14 +3,9 @@
 
 class Solution:
     def minMoves2(self, nums: list[int]) -> int:
-        res = 0
+        nums.sort()
         mid = nums[len(nums) // 2]
-        for num in nums:
-            if num > mid:
-                res += num - mid
-            elif num < mid:
-                res += mid - num
-        return res
+        return sum(abs(num - mid) for num in nums)
 
 
 

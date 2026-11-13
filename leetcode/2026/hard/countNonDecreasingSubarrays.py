@@ -1,29 +1,33 @@
 from typing import List
+from collections import deque
+
 
 
 
 class Solution:
-    def _canMakeNoneDecreasing(self, start: int, end: int, k : int, nums: List[int]) -> bool:
-        nums_copy = nums[:]
-        for i in range(start, end):
-            curr_num = nums_copy[i]
-            if curr_num > nums_copy[i + 1] and k > 0:
-                diff = min(curr_num - nums_copy[i + 1], k)
-                nums_copy[i + 1] += diff
-                k -= diff
-            if curr_num > nums_copy[i + 1]:
-                return False
-        return True
-
     def countNonDecreasingSubarrays(self, nums: List[int], k: int) -> int:
-        res = 0
-        left = 0
-        for right in range(len(nums)):
-            while left <= right and not self._canMakeNoneDecreasing(left, right, k, nums):
-                left += 1
-            res += (right - left + 1)
+        res = 1
+        n = len(nums)
+        left, right = n - 2, n - 1
+        queue = deque([[nums[right], 1]])
+        while left >= 0:
+            counts_num = 1
+            while queue and nums[left] > queue[0][0]:
+                num, counts = queue.popleft()
+                diff = (nums[left] - num) * counts
+                counts_num += counts
+                k -= diff
+            queue.appendleft([nums[left], counts_num])
+            while k < 0:
+                k += queue[-1][0] - nums[right]
+                right -= 1
+                if queue[-1][1] > 1:
+                    queue[-1][1] -= 1
+                else:
+                    queue.pop()
+            res += right - left + 1
+            left -= 1
         return res
-
 
 
 obj = Solution()

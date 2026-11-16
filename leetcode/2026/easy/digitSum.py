@@ -3,25 +3,17 @@
 class Solution:
     def digitSum(self, s: str, k: int) -> str:
         n = len(s)
-        def replaceConsecutive(s: str, k: int, n: int) -> str:
-            if n <= k:
-                return s
+        while n > k:
+            curr_sum = 0
             consecutive_groups = []
-            count, curr_sum = 0, 0
-            for idx, num in enumerate(s):
-                count += 1
-                curr_sum += int(num)
-                if count == k or idx == (n - 1):
+            for count, char in enumerate(s, 1):
+                curr_sum += int(char)
+                if count % k == 0 or count == n:
                     consecutive_groups.append(str(curr_sum))
                     curr_sum = 0
-                    count = 0
-            return "".join(consecutive_groups)
-        res = replaceConsecutive(s, k, n)
-        m = len(res)
-        while m > k:
-            res = replaceConsecutive(res, k, m)
-            m = len(res)
-        return res
+            s = "".join(consecutive_groups)
+            n = len(s)
+        return s
 
 
 

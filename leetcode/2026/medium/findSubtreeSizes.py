@@ -1,27 +1,38 @@
+from re import sub
 from typing import List
 from functools import cache
+from collections import defaultdict
+import sys
 
 
+sys.setrecursionlimit(200000)
 
 class Solution:
     def findSubtreeSizes(self, parent: List[int], s: str) -> List[int]:
         n = len(parent)
         new_parent = [0] * n
-        for x in range(1, n):
-            curr_node = parent[x]
-            while curr_node != -1:
-                if s[curr_node] == s[x]:
-                    new_parent[x] = curr_node
-                    break
-                else:
-                    new_parent[x] = parent[x]
-                curr_node = parent[curr_node]
-
+        children = [[] for _ in range(n)]
+        for i in range(n):
+            p = parent[i]
+            if p != -1:
+                children[p].append(i)
+        letters = {}
+        def subtree(u):
+            prev = letters.get(s[u], -1)
+            if prev != -1:
+                new_parent[u] = letters[s[u]]
+            else:
+                new_parent[u] = parent[u]
+            letters[s[u]] = u
+            for v in children[u]:
+                subtree(v)
+            letters[s[u]] = prev
+        subtree(0)
         answer = [1] * n
         children = [[] for _ in range(n)]
         for i in range(n):
             p = new_parent[i]
-            if p != i:
+            if p != -1:
                 children[p].append(i)
         @cache
         def dfs(u):
@@ -30,8 +41,8 @@ class Solution:
                 child_res = dfs(v)
                 res += child_res
             return res + 1
-        for num in new_parent:
-            answer[num] = dfs(num)
+        for i in range(n):
+            answer[i] = dfs(i)
         return answer
 
 
